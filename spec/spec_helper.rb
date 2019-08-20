@@ -1,6 +1,5 @@
 # Run Coverage report
 require 'simplecov'
-require 'minitest'
 require 'simplecov-rcov'
 
 SimpleCov.formatter = SimpleCov::Formatter::RcovFormatter
@@ -37,7 +36,6 @@ require 'spree/testing_support/controller_requests'
 require 'spree/testing_support/flash'
 require 'spree/testing_support/url_helpers'
 require 'spree/testing_support/order_walkthrough'
-require 'spree/testing_support/caching'
 require "spree/testing_support/i18n"
 
 
@@ -85,7 +83,7 @@ RSpec.configure do |config|
 
   # Before each spec check if it is a Javascript test and switch between using database transactions or not where necessary.
   config.before :each do
-    DatabaseCleaner.strategy = example.metadata[:js] ? :truncation : :transaction
+    DatabaseCleaner.strategy = example.metadata[:js] ? :truncation : :truncation
     DatabaseCleaner.start
   end
 
