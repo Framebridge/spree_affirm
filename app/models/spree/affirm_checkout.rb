@@ -34,7 +34,7 @@ module Spree
       order.line_items.each do |line_item|
 
         # check that the line item sku exists in the affirm checkout
-        if !(_item = details["items"][line_item.variant.sku])
+        if !(_item = details["items"][[line_item.variant.sku, line_item.id].join("-")])
           errors.add :line_items, "Line Item not in checkout details"
 
         # check quantity & price

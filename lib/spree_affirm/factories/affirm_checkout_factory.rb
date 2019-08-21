@@ -171,7 +171,7 @@ FactoryGirl.define do
       # setup items in cart
       _details['items'] = {}
       checkout.order.line_items.each do |item|
-        _details['items'][item.variant.sku] = {
+        _details['items'][[item.variant.sku, item.id].join("-")] = {
           "qty" => item.quantity.to_s,
           "unit_price" => (item.price*100).to_s,
           "display_name" => item.product.name
