@@ -59,7 +59,11 @@ module Spree
       })
 
       # transition to confirm or complete
-      while order.next; end
+      if order.confirmation_required?
+        order.next if !order.confirm?
+      else
+        while order.next; end
+      end
 
       if order.completed?
         session[:order_id] = nil

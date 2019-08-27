@@ -17,6 +17,8 @@ group :test do
   gem 'simplecov-rcov'
   gem 'database_cleaner'
   gem 'minitest'
+  gem 'pry'
+  gem 'webmock'
 end
 
 gemspec

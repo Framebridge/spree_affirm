@@ -22,6 +22,7 @@ require File.expand_path('../dummy/config/environment.rb',  __FILE__)
 
 require 'rspec/rails'
 require 'database_cleaner'
+require 'webmock/rspec'
 require 'ffaker'
 
 # Requires supporting ruby files with custom matchers and macros, etc,

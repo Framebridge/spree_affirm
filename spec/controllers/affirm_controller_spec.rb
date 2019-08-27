@@ -17,6 +17,67 @@ describe Spree::AffirmController do
     before do
       controller.stub authenticate_spree_user!: true
       controller.stub spree_current_user: user
+
+      stub_request(:post, "https://sandbox.affirm.com/api/v2/charges/").
+      to_return(status: 200, body: {
+        id: "ALO4-UVGR",
+        created: "2016-03-18T19:19:04Z",
+        currency: "USD",
+        amount: (checkout.order.total * 100).to_i,
+        auth_hold: (checkout.order.total * 100).to_i,
+        payable: 0,
+        void: false,
+        pending: true,
+        expires: "2016-04-18T19:19:04Z",
+        order_id: "JKLM4321",
+        events:[
+           {
+              created: "2014-03-20T14:00:33Z",
+              currency: "USD",
+              id: "UI1ZOXSXQ44QUXQL",
+              transaction_id: "TpR3Xrx8TkvuGio0",
+              type: "auth"
+           }
+        ],
+        details:{
+           items:{
+              sweatera92123:{
+                 sku: "sweater-a92123",
+                 display_name: "Sweater",
+                 qty:1,
+                 item_type: "physical",
+                 item_image_url: "http://placehold.it/350x150",
+                 item_url: "http://placehold.it/350x150",
+                 unit_price: 5000
+              }
+           },
+           order_id: "JKLM4321",
+           shipping_amount: 0,
+           tax_amount: checkout.order.tax_total,
+           shipping:{
+              name:{
+                 full: "John Doe"
+              },
+              address:{
+                 line1: "325 Pacific Ave",
+                 city: "San Francisco",
+                 state: "CA",
+                 zipcode: "94112",
+                 country: "USA"
+              }
+           },
+           discounts: {
+             RETURN5: {
+               discount_amount:    500,
+               discount_display_name: "Returning customer 5% discount"
+             },
+             PRESDAY10: {
+               discount_amount:    1000,
+               discount_display_name: "President's Day 10% off"
+             }
+           }
+        }
+      }.to_json)
     end
 
     context "when the checkout matches the order" do
@@ -48,21 +109,30 @@ describe Spree::AffirmController do
         end
 
         it "creates a new payment" do
-          post_request "123423423", checkout.payment_method.id
+          post_request checkout.order.token, checkout.payment_method.id
 
           expect(checkout.order.payments.first.source).to eq(checkout)
         end
 
-        # it "transitions to complete if confirmation is not required" do
-        #   checkout.order.stub confirmation_required?: false
-        #   post_request "123423423", checkout.payment_method.id
+        it "transitions to complete if confirmation is not required" do
+          checkout.order.stub confirmation_required?: false
+          post_request checkout.order.token, checkout.payment_method.id
 
-        #   expect(checkout.order.state).to eq("complete")
-        # end
+          expect(checkout.order.state).to eq("complete")
+        end
 
         it "transitions to confirm if confirmation is required" do
           checkout.order.stub confirmation_required?: true
-          post_request "123423423", checkout.payment_method.id
+          post_request checkout.order.token, checkout.payment_method.id
+
+          expect(checkout.order.reload.state).to eq("confirm")
+        end
+
+        it "does not advance an order if it's already in the confirm state" do
+          checkout.order.state = 'confirm'
+          checkout.order.save!
+          checkout.order.stub confirmation_required?: true
+          post_request checkout.order.token, checkout.payment_method.id
 
           expect(checkout.order.reload.state).to eq("confirm")
         end
