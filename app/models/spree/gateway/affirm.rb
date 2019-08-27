@@ -44,7 +44,9 @@ module Spree
       if _payment.pending?
         _payment.void_transaction!
       elsif _payment.completed? && _payment.can_credit?
-        provider.refund(_payment.credit_allowed.to_money.cents, charge_ari)
+        _payment.order.update!
+
+        _payment.credit!
       end
     end
   end

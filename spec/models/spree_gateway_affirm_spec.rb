@@ -56,8 +56,12 @@ describe Spree::Gateway::Affirm do
 
     context "when the payment is in a completed state" do
       before(:each) do
+        stub_request(:post, "https://sandbox.affirm.com/api/v2/charges/12345/refund").
+        to_return(status: 200, body: "", headers: {})
+
         affirm_payment.stub(:completed?).and_return true
         affirm_payment.state = "completed"
+        affirm_payment.order.state = "completed"
         affirm_payment.save
       end
 
