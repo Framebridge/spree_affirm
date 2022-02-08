@@ -10,7 +10,7 @@ module Spree
 
       if !params[:checkout_token]
         flash[:notice] = "Invalid order confirmation data."
-        return redirect_to checkout_state_path(current_order.state)
+        return redirect_to "/purchase"
       end
 
       if order.complete?
@@ -71,7 +71,7 @@ module Spree
         flash[:order_completed] = true
         redirect_to completion_route order
       else
-        redirect_to checkout_state_path(order.state)
+        redirect_to "/purchase"
       end
     end
 

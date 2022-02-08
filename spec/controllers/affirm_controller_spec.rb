@@ -89,7 +89,7 @@ describe Spree::AffirmController do
       context "when no checkout_token is provided" do
         it "redirects to the current order state" do
           post_request(nil, nil)
-          expect(response).to redirect_to(controller.checkout_state_path(checkout.order.state))
+          expect(response).to redirect_to("/purchase")
         end
       end
 
