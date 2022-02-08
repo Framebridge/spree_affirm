@@ -205,4 +205,18 @@ describe Spree::AffirmController do
       end
     end
   end
+
+  describe "GET cancel" do
+    before do
+      controller.stub authenticate_spree_user!: true
+      controller.stub spree_current_user: user
+    end
+
+    context "when the checkout has been cancelled" do
+      before { get :cancel, use_route: "spree" }
+      it "redirects to the purchase path" do
+        expect(response).to redirect_to("/purchase")
+      end
+    end
+  end
 end

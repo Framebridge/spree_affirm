@@ -76,7 +76,7 @@ module Spree
     end
 
     def cancel
-      redirect_to checkout_state_path(current_order.state)
+      redirect_to "/purchase"
     end
 
     private
