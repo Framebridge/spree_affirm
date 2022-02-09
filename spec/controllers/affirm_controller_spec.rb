@@ -89,7 +89,7 @@ describe Spree::AffirmController do
       context "when no checkout_token is provided" do
         it "redirects to the current order state" do
           post_request(nil, nil)
-          expect(response).to redirect_to("/purchase")
+          expect(response).to redirect_to(Spree::AffirmController::PURCHASE_PATH)
         end
       end
 
@@ -215,7 +215,7 @@ describe Spree::AffirmController do
     context "when the checkout has been cancelled" do
       before { get :cancel, use_route: "spree" }
       it "redirects to the purchase path" do
-        expect(response).to redirect_to("/purchase")
+        expect(response).to redirect_to(Spree::AffirmController::PURCHASE_PATH)
       end
     end
   end

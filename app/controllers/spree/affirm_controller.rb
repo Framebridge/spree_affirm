@@ -1,5 +1,6 @@
 module Spree
   class AffirmController < Spree::StoreController
+    PURCHASE_PATH = "/purchase"
     helper 'spree/orders'
 
     #the confirm will do it's own protection by making calls to affirm
@@ -10,7 +11,7 @@ module Spree
 
       if !params[:checkout_token]
         flash[:notice] = "Invalid order confirmation data."
-        return redirect_to "/purchase"
+        return redirect_to PURCHASE_PATH
       end
 
       if order.complete?
@@ -71,12 +72,12 @@ module Spree
         flash[:order_completed] = true
         redirect_to completion_route order
       else
-        redirect_to "/purchase"
+        redirect_to PURCHASE_PATH
       end
     end
 
     def cancel
-      redirect_to "/purchase"
+      redirect_to PURCHASE_PATH
     end
 
     private
