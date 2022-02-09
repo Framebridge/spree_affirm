@@ -42,22 +42,6 @@
         }
       },
 
-      billing: {
-        email: "<%= @order.email %>",
-        name: {
-          full:   "<%= @order.bill_address.full_name %>"
-        },
-        address: {
-          line1:          "<%= @order.bill_address.address1 %>",
-          line2:          "<%= @order.bill_address.address2 %>",
-          city:           "<%= @order.bill_address.city %>",
-          state:          "<%= @order.bill_address.state_text %>",
-          country:        "<%= @order.bill_address.country.iso %>",
-          zipcode:        "<%= @order.bill_address.zipcode %>",
-        }
-      },
-
-
       metadata: {
             "platform_type": "Spree Commerce",
             "platform_version": "<%= Spree.version %>",
@@ -86,9 +70,7 @@
         user_cancel_url:          "<%= cancel_affirm_url(:payment_method_id => payment_method.id) %>",
       },
 
-      config: {
-        required_billing_fields:      "name,address,email",
-      },
+      config: {},
 
 
       <% if @order.promotions.any? %>

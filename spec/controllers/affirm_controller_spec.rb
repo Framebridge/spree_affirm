@@ -3,10 +3,7 @@ require 'spec_helper'
 describe Spree::AffirmController do
   let(:user) { FactoryGirl.create(:user) }
   let(:checkout) { FactoryGirl.build(:affirm_checkout) }
-  let(:bad_billing_checkout) { FactoryGirl.build(:affirm_checkout, billing_address_mismatch: true) }
   let(:bad_shipping_checkout) { FactoryGirl.build(:affirm_checkout, shipping_address_mismatch: true) }
-  let(:bad_email_checkout) { FactoryGirl.build(:affirm_checkout, billing_email_mismatch: true) }
-
 
   describe "POST confirm" do
 
@@ -140,24 +137,6 @@ describe Spree::AffirmController do
 
     end
 
-    context "when the billing_address does not match the order" do
-      before do
-        Spree::AffirmCheckout.stub new: bad_billing_checkout
-        state = FactoryGirl.create(:state, abbr: bad_billing_checkout.details['billing']['address']['region1_code'])
-        Spree::State.stub find_by_abbr: state, find_by_name: state
-        controller.stub current_order: bad_billing_checkout.order
-      end
-
-      it "creates a new address record for the order" do
-        _old_billing_address = bad_billing_checkout.order.bill_address
-        post_request '12345789', bad_billing_checkout.payment_method.id
-
-        expect(bad_billing_checkout.order.bill_address).not_to be(_old_billing_address)
-        expect(bad_billing_checkout.valid?).to be(true)
-      end
-    end
-
-
     context "when the shipping_address does not match the order" do
       before do
         Spree::AffirmCheckout.stub new: bad_shipping_checkout
@@ -174,24 +153,6 @@ describe Spree::AffirmController do
         expect(bad_shipping_checkout.valid?).to be(true)
       end
     end
-
-
-
-    context "when the billing_email does not match the order" do
-      before do
-        Spree::AffirmCheckout.stub new: bad_email_checkout
-        controller.stub current_order: bad_email_checkout.order
-      end
-
-      it "updates the billing_email on the order" do
-        _old_email = bad_email_checkout.order.email
-        post_request '12345789', bad_email_checkout.payment_method.id
-
-        expect(bad_email_checkout.order.email).not_to be(_old_email)
-        expect(bad_email_checkout.valid?).to be(true)
-      end
-    end
-
 
     context "there is no current order" do
       before(:each) do

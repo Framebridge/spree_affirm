@@ -11,7 +11,6 @@ en:
         "Line Item not in checkout details": "Line Item not in checkout details"
         "Quantity mismatch": "Quantity mismatch"
         "Price mismatch": "Price mismatch"
-        "Billing email mismatch": "Billing email mismatch"
         "city mismatch": "city mismatch"
         "street1 mismatch": "street1 mismatch"
         "street2 mismatch": "street2 mismatch"
@@ -23,7 +22,4 @@ en:
     attributes:
       "spree/affirm_checkout":
         line_items: "items"
-        billing_address: "billing address"
         shipping_address: "shipping address"
-        billing_email: "email"
-

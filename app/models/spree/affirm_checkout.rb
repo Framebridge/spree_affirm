@@ -20,8 +20,6 @@ module Spree
 
       check_valid_products
       check_matching_shipping_address
-      check_matching_billing_address
-      check_matching_billing_email
     end
 
     def check_valid_products
@@ -51,13 +49,6 @@ module Spree
       true
     end
 
-    def check_matching_billing_address
-      # ensure we have a standardized address format
-      details['billing']['address'] = normalize_affirm_address details['billing']['address']
-
-      # validate address
-      check_address_match details["billing"], order.bill_address, :billing_address
-    end
 
     def check_matching_shipping_address
       # ensure we have a standardized address format
@@ -65,12 +56,6 @@ module Spree
 
       # validate address
       check_address_match details["shipping"], order.ship_address, :shipping_address
-    end
-
-    def check_matching_billing_email
-      if details["billing"]["email"].present? and details["billing"]["email"].casecmp(order.email) != 0
-        errors.add :billing_email, "Billing email mismatch"
-      end
     end
 
     def actions
