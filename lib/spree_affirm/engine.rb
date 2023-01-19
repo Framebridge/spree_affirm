@@ -1,3 +1,5 @@
+require_relative '../active_merchant/billing/affirm'
+
 module SpreeAffirm
   class Engine < Rails::Engine
     require 'spree/core'
